@@ -3,6 +3,8 @@ import time
 import sys
 import os
 
+
+
 def clean():
     # For Windows
     if os.name == 'nt':
@@ -69,20 +71,27 @@ def getToken():
 
     slugstring = f"{http_str}://{host}/book/{slugdata}"
 
+    print(Style.BRIGHT + Fore.BLUE + f"Link: {slugstring}" + Style.RESET_ALL)
+
     qr = pyqrcode.create(slugstring)
-    qr_dat = qr.xbm(scale=8)
+    qr_dat = qr.xbm(scale=10)
     top = tkinter.Tk()
     top.title("QR for the customer")
+    top.attributes('-fullscreen', True)
     tkinter.Canvas(top)
     code_bmp = tkinter.BitmapImage(data=qr_dat)
     code_bmp.config(background="white")
     label = tkinter.Label(top, image=code_bmp)
+    label.place(relx=.5, rely=.5,anchor = "center")
     labelimage = code_bmp
-    
-    label.pack()
+    def close_win(e,top):
+    	top.destroy()
+    top.after(1000, lambda: top.focus_force())
+    label.pack(expand=True)
+    top.bind('<Escape>', lambda e: close_win(e,top))
     top.mainloop()
 
-    print(Style.BRIGHT + Fore.BLUE + f"Link: {slugstring}" + Style.RESET_ALL)
+    
 
 CLILock = ""
 while(CLILock == ""):
