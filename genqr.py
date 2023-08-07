@@ -84,10 +84,14 @@ def getToken():
     label = tkinter.Label(top, image=code_bmp)
     label.place(relx=.5, rely=.5,anchor = "center")
     labelimage = code_bmp
+    footer_frame = tkinter.Frame(top)
+    l2 = tkinter.Label(footer_frame, text = 'ESC to close', font = 'arial 10', padx=5, pady=5).pack(side = tkinter.RIGHT, anchor='se')
+    
     def close_win(e,top):
     	top.destroy()
     top.after(1000, lambda: top.focus_force())
     label.pack(expand=True)
+    footer_frame.pack(side="bottom", fill="x")
     top.bind('<Escape>', lambda e: close_win(e,top))
     top.mainloop()
 
@@ -119,7 +123,3 @@ while(True):
         print("\nCOMMANDS:\n1. gqr - generates a QR to claim a ticket\n2. clear - clear the screen\n3. exit - closes and exits\n3. help - displays this message")
     else:
         print(Fore.RED + "Invalid command! Type 'help' or '?' for a command list" + Style.RESET_ALL)
-
-
-
-
