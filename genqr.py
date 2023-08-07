@@ -1,5 +1,6 @@
 import json
 import os
+from getpass import getpass
 from colorama import Fore, Back, Style
 import pyqrcode
 
@@ -14,7 +15,7 @@ background = "black" if pass_json["invertBG"] else "white"
 foreground = "white" if pass_json["invertFG"] else "black"
 
 if(passphrase == "" or host == ""):
-   print("Passphrase/host cannot be empty! Exiting.")
+   print("ServerPassphrase/host cannot be empty! Exiting.")
    passphrase_file.close()
    exit()
 
@@ -48,6 +49,10 @@ def clean():
 
                                                                 
 def getToken():
+    cpass = getpass("Enter the passphrase: ")
+    if(cpass != CLILock):
+        print(Fore.RED + "Invalid passphrase!" + Style.RESET_ALL)
+        return
     clean()
     slugdata = "returnedbyapi"
 
@@ -59,6 +64,17 @@ def getToken():
     else:
         print(qr.terminal(module_color=foreground, background=background))
     print(Style.BRIGHT + Fore.BLUE + f"Link: {slugstring}" + Style.RESET_ALL)
+
+CLILock = ""
+while(CLILock == ""):
+    CLILock = getpass("Enter a passphrase to secure gqr: ")
+    print(Style.RESET_ALL + " ")
+    if(CLILock == ""):
+        print(Fore.RED + "Phrase cannot be empty" + Style.RESET_ALL)
+    else:
+        print(Fore.GREEN + "Set successfully" + Style.RESET_ALL)
+    
+
 
 while(True):
     print("\n"+ Fore.GREEN +"[COMMAND]: " + Style.RESET_ALL, end="")
