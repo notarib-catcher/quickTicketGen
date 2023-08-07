@@ -1,7 +1,23 @@
 import json
+import time
+import sys
 import os
+
+def clean():
+    # For Windows
+    if os.name == 'nt':
+        os.system('cls')
+
+
+    # For macOS and Linux
+    else:
+        os.system('clear')
+clean()
+import tkinter
+import easygui as e
 from getpass import getpass
-from colorama import Fore, Back, Style
+from colorama import Fore, Back, Style, init
+init(convert=True)
 import pyqrcode
 
 
@@ -9,8 +25,8 @@ import pyqrcode
 try:
     passphrase_file = open("./config.json")
 except FileNotFoundError:
-    print(Fore.RED + "Error: No config.json file found." + Style.RESET_ALL + "\nPlease make a config.json file in this directory.\n"+Style.RESET_ALL+"Check github for an example.")
-    exit()
+    e.msgbox("Could not find config.json")
+    sys.exit()
 pass_json = json.load(passphrase_file)
 passphrase = pass_json["preshared_passphrase"]
 host = pass_json["host_ip_or_domain_with_optional_port"]
@@ -20,7 +36,8 @@ foreground = "white" if pass_json["invertFG"] else "black"
 if(passphrase == "" or host == ""):
    print("ServerPassphrase/host cannot be empty! Exiting.")
    passphrase_file.close()
-   exit()
+   time.sleep(5)
+   sys.exit()
 
 http_str = ""
 if(pass_json["use_https"]):
@@ -40,15 +57,6 @@ print(" |_____/|_____|_|  |_|_|    |______|______|  |_|  |_|\_\  |_|   \n\n" + S
 print("By" + Fore.BLUE + " Aaryan D. MITB (2021-25)" + Style.RESET_ALL)
 print("Support - " + Fore.BLUE + "Discord:" + Fore.CYAN +  " @ribcatcher" + Style.RESET_ALL)
 print("For help type '?'\n")
-def clean():
-    # For Windows
-    if os.name == 'nt':
-        os.system('cls')
-
-
-    # For macOS and Linux
-    else:
-        os.system('clear')
 
                                                                 
 def getToken():
@@ -62,10 +70,18 @@ def getToken():
     slugstring = f"{http_str}://{host}/book/{slugdata}"
 
     qr = pyqrcode.create(slugstring)
-    if((not pass_json["invertFG"]) and (not pass_json["invertBG"])):
-        print(qr.terminal())
-    else:
-        print(qr.terminal(module_color=foreground, background=background))
+    qr_dat = qr.xbm(scale=8)
+    top = tkinter.Tk()
+    top.title("QR for the customer")
+    tkinter.Canvas(top)
+    code_bmp = tkinter.BitmapImage(data=qr_dat)
+    code_bmp.config(background="white")
+    label = tkinter.Label(top, image=code_bmp)
+    labelimage = code_bmp
+    
+    label.pack()
+    top.mainloop()
+
     print(Style.BRIGHT + Fore.BLUE + f"Link: {slugstring}" + Style.RESET_ALL)
 
 CLILock = ""
@@ -89,7 +105,7 @@ while(True):
     elif(cmd == "exit"):
         clean()
         passphrase_file.close()
-        exit()
+        sys.exit()
     elif(cmd == "help" or cmd == "?"):
         print("\nCOMMANDS:\n1. gqr - generates a QR to claim a ticket\n2. clear - clear the screen\n3. exit - closes and exits\n3. help - displays this message")
     else:
