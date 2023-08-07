@@ -78,6 +78,7 @@ def getToken():
     top = tkinter.Tk()
     top.title("QR for the customer")
     top.attributes('-fullscreen', True)
+    top.attributes("-topmost", True)
     tkinter.Canvas(top)
     code_bmp = tkinter.BitmapImage(data=qr_dat)
     code_bmp.config(background="white")
