@@ -2,6 +2,7 @@ import json
 import time
 import sys
 import os
+import requests
 
 
 
@@ -67,9 +68,21 @@ def getToken():
         print(Fore.RED + "Invalid passphrase!" + Style.RESET_ALL)
         return
     clean()
-    slugdata = "returnedbyapi"
+    if "type" in pass_json:
+        response = requests.post(f"{http_str}://{host}/api/v1/gentoken", params = "", json = {"secret" : passphrase, "type": pass_json["type"]})
+    else:
+        response = requests.post(f"{http_str}://{host}/api/v1/gentoken", params="", json={"secret": passphrase})
+    if(response.status_code != 201):
+        if (response.status_code == 403):
+            e.msgbox("Passphrase in config.json is invalid")
+            sys.exit()
+        else:
+            e.msgbox("The server encountered an error:\n" + response.text)
+            return
 
-    slugstring = f"{http_str}://{host}/book/{slugdata}"
+
+
+    slugstring = f"{http_str}://{host}/book/{response.text}"
 
     print(Style.BRIGHT + Fore.BLUE + f"Link: {slugstring}" + Style.RESET_ALL)
 

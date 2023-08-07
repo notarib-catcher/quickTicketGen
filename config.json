@@ -1,7 +1,8 @@
 {
-    "preshared_passphrase": "Hello",
+    "preshared_passphrase": "hellohelloworldworld",
     "host_ip_or_domain_with_optional_port":"localhost:5173",
     "use_https":false,
     "invertFG":false,
-    "invertBG":false
+    "invertBG":false,
+    "type": "EXAMPLE_TYPE"
 }
