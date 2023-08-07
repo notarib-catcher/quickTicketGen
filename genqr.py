@@ -6,8 +6,11 @@ import pyqrcode
 
 
 
-
-passphrase_file = open("./config.json")
+try:
+    passphrase_file = open("./config.json")
+except FileNotFoundError:
+    print(Fore.RED + "Error: No config.json file found." + Style.RESET_ALL + "\nPlease make a config.json file in this directory.\n"+Style.RESET_ALL+"Check github for an example.")
+    exit()
 pass_json = json.load(passphrase_file)
 passphrase = pass_json["preshared_passphrase"]
 host = pass_json["host_ip_or_domain_with_optional_port"]
